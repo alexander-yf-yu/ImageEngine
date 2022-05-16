@@ -1,10 +1,12 @@
 FROM python
 
 ENV PYTHONUNBUFFERED True
+ENV IMAGE_DIR /var/uploads
 WORKDIR /shopify-data
 
 COPY . .
 
+RUN mkdir -p $IMAGE_DIR
 RUN pip3 install -r requirements.txt
 
 # Run the web service on container startup. Here we use the gunicorn
