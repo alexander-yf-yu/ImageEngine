@@ -1,10 +1,10 @@
 from flask import Flask, request, redirect, url_for, render_template
 from flask_bootstrap import Bootstrap
-from google.cloud import firestore
 from werkzeug.utils import secure_filename
 import os
 
-from .forms import ImageUploadForm
+from forms import ImageUploadForm
+from models import Image, db
 
 collection_name = os.environ['COLLECTION_NAME']
 image_dir = os.environ['IMAGE_DIR']
@@ -17,15 +17,21 @@ def create_db():
 
 def create_app():
     app = Flask(__name__)
+    #app = Flask(__name__, static_url_path='', static_folder='/static')
+    #app = Flask(__name__, static_url_path='')
     SECRET_KEY = os.urandom(32)
     app.config['SECRET_KEY'] = SECRET_KEY
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
     Bootstrap(app)
 
-    db = create_db()
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()
 
     @app.route("/")
-    def hello_world():
-        return "<p>Hello, World!</p>"
+    def index():
+        images = Image.query.all()
+        return render_template('index.html', images=images)
 
     @app.route('/upload', methods=['GET', 'POST'])
     def upload():
@@ -33,17 +39,14 @@ def create_app():
 
         if form.validate_on_submit():
             f = form.image.data
-            img_name = secure_filename(f.filename)
+            f_name = secure_filename(f.filename)
             img = form.image.data
             img.save(os.path.join(image_dir, secure_filename(f.filename)))
+
+            new_record = Image(filename=f_name, description=form.description.data)
+            db.session.add(new_record)
+            db.session.commit()
             
-            img_ref = db.collection(collection_name).document(secure_filename(f.filename))
-            data = {
-                u'id': img_name,
-                u'description': form.description.data,
-                u'category': form.category.data,
-            }
-            img_ref.set(data)
             return redirect(url_for('hello_world'))
         else:
             return render_template('upload.html', form=form)

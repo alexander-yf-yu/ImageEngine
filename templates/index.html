@@ -1,0 +1,34 @@
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "bootstrap/base.html" %}
+
+{% block title %}ImageEngine Home{% endblock %}
+
+{% block content %}
+   <div class="container">
+      <div class="jumbotron">
+        <h1>Welcome to ImageEngine</h1>
+        <p>Search for images by tag or description</p>
+        <p>Upload a new image</p>
+        <p>Browse all images</p>
+      </div>
+
+	  <div class="card" style="width: 100%;">
+		  <img class="card-img-top" src="..." alt="Card image cap">
+		  <div class="card-body">
+			<h5 class="card-title">Card title</h5>
+			<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+			<a href="#" class="btn btn-primary">Go somewhere</a>
+		  </div>
+	  </div>
+
+	  <ul class="list-group">
+		  {% for img in images %}
+		  <li class="list-group-item">{{ img.filename }}</li>
+		  <img class="card-img-top" src="{{ url_for('static', filename=img.filename) }}" alt="Card image cap">
+		  <li class="list-group-item">Porta ac consectetur ac</li>
+		  <li class="list-group-item">Vestibulum at eros</li>
+		  {% endfor %}
+	  </ul>
+   </div>
+
+{% endblock %}

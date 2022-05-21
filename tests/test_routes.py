@@ -1,6 +1,6 @@
 import pytest
 from flask import url_for
-from flask_app import app
+import app
 
 def test_hello_world():
     test_app = app.create_app()
