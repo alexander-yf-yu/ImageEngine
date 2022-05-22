@@ -1,34 +1,50 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% extends "bootstrap/base.html" %}
 
-{% block title %}ImageEngine Home{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block content %}
    <div class="container">
       <div class="jumbotron">
         <h1>Welcome to ImageEngine</h1>
-        <p>Search for images by tag or description</p>
-        <p>Upload a new image</p>
-        <p>Browse all images</p>
+        <p>A searchable image repository!</p>
       </div>
 
-	  <div class="card" style="width: 100%;">
-		  <img class="card-img-top" src="..." alt="Card image cap">
-		  <div class="card-body">
-			<h5 class="card-title">Card title</h5>
-			<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-			<a href="#" class="btn btn-primary">Go somewhere</a>
-		  </div>
-	  </div>
+		<ul class="nav nav-tabs">
+		  <li class="active"><a href="{{ url_for('index') }}">Browse</a></li>
+		  <li><a href="{{ url_for('upload') }}">Upload</a></li>
+		  <li><a href="{{ url_for('search') }}">Search</a></li>
+		</ul>
 
-	  <ul class="list-group">
+		<br>
+
+		{% if images %}
+		  <div class="card-deck">
 		  {% for img in images %}
-		  <li class="list-group-item">{{ img.filename }}</li>
-		  <img class="card-img-top" src="{{ url_for('static', filename=img.filename) }}" alt="Card image cap">
-		  <li class="list-group-item">Porta ac consectetur ac</li>
-		  <li class="list-group-item">Vestibulum at eros</li>
+		    <div class="card">
+			  <img class="card-img-top" src="{{ url_for('static', filename=img.filename) }}" alt="Card image cap">
+			  <div class="card-body">
+			    <h5 class="card-title">Name: {{ img.filename }}</h5>
+			    <p class="card-text">Description: {{ img.description }}</p>
+			  </div>
+			  <div class="card-footer">
+			    <small class="text-muted">Publication date: {{ img.pub_date }}</small>
+			  </div>
+		    </div>
 		  {% endfor %}
-	  </ul>
+		  </div>
+		{% else %}
+			 <p> The image repository is currently empty </p>
+		{% endif %}
+
    </div>
 
+{% endblock %}
+
+{% block scripts %}
+	{{super()}}
+	<!-- CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+	<!-- JavaScript Bundle with Popper -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
 {% endblock %}

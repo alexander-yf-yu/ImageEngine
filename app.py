@@ -3,25 +3,17 @@ from flask_bootstrap import Bootstrap
 from werkzeug.utils import secure_filename
 import os
 
-from forms import ImageUploadForm
+from forms import ImageUploadForm, ImageSearchForm
 from models import Image, db
 
-collection_name = os.environ['COLLECTION_NAME']
-image_dir = os.environ['IMAGE_DIR']
-
-def create_db():
-    # using service account in environment
-    # db = firestore.Client()
-    db = firestore.Client.from_service_account_json("shopify-data-gcr-key.json")
-    return db
+IMAGE_DIR = 'static'
 
 def create_app():
     app = Flask(__name__)
-    #app = Flask(__name__, static_url_path='', static_folder='/static')
-    #app = Flask(__name__, static_url_path='')
     SECRET_KEY = os.urandom(32)
     app.config['SECRET_KEY'] = SECRET_KEY
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     Bootstrap(app)
 
     db.init_app(app)
@@ -29,9 +21,28 @@ def create_app():
         db.create_all()
 
     @app.route("/")
-    def index():
-        images = Image.query.all()
+    def index(images=None):
+        if not images:
+            images = Image.query.all()
         return render_template('index.html', images=images)
+
+    @app.route("/search", methods=['GET', 'POST'])
+    def search():
+        form = ImageSearchForm()
+
+        if form.validate_on_submit():
+            search_text = '%{0}%'.format(form.text.data)
+            print(search_text)
+            print(type(search_text))
+            if search_text:
+                # filtered = Image.query.filter(Image.description.contains(search_text))
+                filtered = Image.query.filter(Image.description.ilike(search_text))
+                print(filtered)
+                return redirect(url_for('index', images=filtered))
+            else:
+                return redirect(url_for('index'))
+        else:
+            return render_template('search.html', form=form)
 
     @app.route('/upload', methods=['GET', 'POST'])
     def upload():
@@ -41,13 +52,15 @@ def create_app():
             f = form.image.data
             f_name = secure_filename(f.filename)
             img = form.image.data
-            img.save(os.path.join(image_dir, secure_filename(f.filename)))
+            img.save(os.path.join(IMAGE_DIR, secure_filename(f.filename)))
 
             new_record = Image(filename=f_name, description=form.description.data)
             db.session.add(new_record)
             db.session.commit()
-            
-            return redirect(url_for('hello_world'))
+
+            images = Image.query.all()
+
+            return redirect(url_for('index'))
         else:
             return render_template('upload.html', form=form)
 

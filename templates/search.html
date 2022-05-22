@@ -1,0 +1,31 @@
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "bootstrap/base.html" %}
+
+{% block title %}Search{% endblock %}
+
+{% block content %}
+   <div class="container">
+      <div class="jumbotron">
+        <h1>Search the image repo</h1>
+        <p>Narrow search by description or publication date</p>
+      </div>
+
+		<ul class="nav nav-tabs">
+		  <li><a href="{{ url_for('index') }}">Browse</a></li>
+		  <li><a href="{{ url_for('upload') }}">Upload</a></li>
+		  <li class="active"><a href="{{ url_for('search') }}">Search</a></li>
+		</ul>
+
+		<br>
+
+	  <form class="form form-horizontal" action="{{ url_for('search') }}" method="post" enctype="multipart/form-data" role="form">
+		{{ form.hidden_tag() }}
+		{{ wtf.form_errors(form, hiddens="only") }}
+		{{ wtf.form_field(form.text) }}
+		{{ wtf.form_field(form.start) }}
+		{{ wtf.form_field(form.end) }}
+		<input type="submit" value="Search">
+	  </form>
+   </div>
+
+{% endblock %}
