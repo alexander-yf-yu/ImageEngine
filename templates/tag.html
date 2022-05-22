@@ -1,0 +1,31 @@
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "bootstrap/base.html" %}
+
+{% block title %}Tag an existing image{% endblock %}
+
+{% block content %}
+   <div class="container">
+      <div class="jumbotron">
+        <h1>Signup for our awesome service</h1>
+        <p>Note: Your data isn't going anywhere.</p>
+      </div>
+
+		<ul class="nav nav-tabs">
+		  <li><a href="{{ url_for('index') }}">Browse</a></li>
+		  <li class="active"><a href="{{ url_for('upload') }}">Upload</a></li>
+		  <li><a href="{{ url_for('search') }}">Search</a></li>
+		</ul>
+
+		<br>
+
+	  <form class="form form-horizontal" action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data" role="form">
+		{{ form.hidden_tag() }}
+		{{ wtf.form_errors(form, hiddens="only") }}
+		{{ wtf.form_field(form.image) }}
+		{{ wtf.form_field(form.description) }}
+		{{ wtf.form_field(form.tag) }}
+		<input type="submit" value="Upload">
+	  </form>
+   </div>
+
+{% endblock %}
