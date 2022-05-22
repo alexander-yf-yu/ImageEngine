@@ -6,7 +6,7 @@ import os
 from forms import ImageUploadForm, ImageSearchForm
 from models import Image, db
 
-IMAGE_DIR = 'static'
+IMAGE_DIR = os.environ['IMAGE_DIR']
 
 def create_app():
     app = Flask(__name__)
