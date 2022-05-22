@@ -32,12 +32,9 @@ def create_app():
 
         if form.validate_on_submit():
             search_text = '%{0}%'.format(form.text.data)
-            print(search_text)
-            print(type(search_text))
             if search_text:
                 # filtered = Image.query.filter(Image.description.contains(search_text))
                 filtered = Image.query.filter(Image.description.ilike(search_text))
-                print(filtered)
                 return redirect(url_for('index', images=filtered))
             else:
                 return redirect(url_for('index'))

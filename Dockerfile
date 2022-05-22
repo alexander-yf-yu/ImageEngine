@@ -1,7 +1,12 @@
 FROM python
 
+# allow initial logs to be written out
 ENV PYTHONUNBUFFERED True
+
+# port for container to expose
 ENV PORT 8080
+
+# location for uploaded images (set to flask '/static')
 ENV IMAGE_DIR static
 
 WORKDIR /ImageEngine
