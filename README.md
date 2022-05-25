@@ -1,5 +1,5 @@
 # ImageEngine
-Image repository project for shopify data engineer intern challenge with search functionality and [pytest](https://docs.pytest.org/en/7.1.x/) integrations. Written as a [flask](https://flask.palletsprojects.com/en/2.1.x/) application and containerized with [Docker](https://www.docker.com/get-started/) with lightweight SQLite backend as per [sqlalchemy](https://www.sqlalchemy.org/).
+Image repository project with search functionality and [pytest](https://docs.pytest.org/en/7.1.x/) integrations. Written as a [flask](https://flask.palletsprojects.com/en/2.1.x/) application and containerized with [Docker](https://www.docker.com/get-started/) with lightweight SQLite backend as per [sqlalchemy](https://www.sqlalchemy.org/).
 
 ## Features
 
